@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konsultasi AI - H+Medical</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="hero">
+  <h1>Konsultasi AI</h1>
+  <p>Masukkan keluhan pasien</p>
+
+  <textarea id="keluhan" placeholder="Contoh: demam, diare, sesak napas, maag, luka..."></textarea>
+
+  <button onclick="analisa()">Analisa</button>
+
+  <div id="loading" class="loading">
+    🤖 AI sedang menganalisa keluhan Anda...
+  </div>
+
+  <div id="hasil"></div>
+
+  <p class="disclaimer">
+    ⚠️ Informasi ini hanya untuk edukasi dan pertolongan awal.
+    Tidak menggantikan diagnosis atau tindakan dokter.
+  </p>
+
+  <!-- DARURAT -->
+  <a href="tel:119" id="daruratBtn" class="darurat fullscreen" style="display:none">
+    🚨 HUBUNGI DARURAT 119
+  </a>
+
+  <a href="index.html" class="outline">Kembali</a>
+</div>
+
+<script>
+function analisa() {
+  const loading = document.getElementById("loading");
+  const hasil = document.getElementById("hasil");
+  const darurat = document.getElementById("daruratBtn");
+  const k = document.getElementById("keluhan").value.toLowerCase();
+
+  hasil.innerHTML = "";
+  darurat.style.display = "none";
+  loading.style.display = "block";
+
+  setTimeout(() => {
+    let h = "";
+
+    /* 🔴 LEVEL 3 DARURAT */
+    if (
+      k.includes("sesak") ||
+      k.includes("asma berat") ||
+      k.includes("nyeri dada") ||
+      k.includes("pingsan")
+    ) {
+      h = `
+      <h3>🔴 LEVEL 3 – DARURAT</h3>
+      <b>🆘 Pertolongan Pertama:</b>
+      <ul>
+        <li>Posisikan setengah duduk</li>
+        <li>Longgarkan pakaian</li>
+        <li>Jangan beri makan/minum</li>
+      </ul>
+      <b>⛔ Larangan:</b> Jangan ditinggal sendirian
+      `;
+      darurat.style.display = "block";
+    }
+
+    /* 🟠 LEVEL 2 */
+    else if (k.includes("diare")) {
+      h = `
+      <h3>🟠 LEVEL 2 – DIARE</h3>
+      <b>💊 Obat:</b> Oralit, Zinc<br>
+      <b>🌿 Herbal:</b> Daun jambu biji<br>
+      <b>🏠 Rumah:</b> Minum sering, makan lunak<br>
+      <b>⛔ Larangan:</b> Pedas & berminyak<br>
+      <b>⏱️ Ke dokter:</b> >2 hari / dehidrasi
+      `;
+    }
+
+    else if (k.includes("maag") || k.includes("asam lambung")) {
+      h = `
+      <h3>🟠 LEVEL 2 – ASAM LAMBUNG</h3>
+      <b>💊 Obat:</b> Antasida<br>
+      <b>🌿 Herbal:</b> Pisang, air hangat<br>
+      <b>🏠 Rumah:</b> Makan teratur<br>
+      <b>⛔ Larangan:</b> Kopi & pedas<br>
+      <b>⏱️ Ke dokter:</b> Nyeri hebat
+      `;
+    }
+
+    /* 🟢 LEVEL 1 */
+    else if (k.includes("demam") || k.includes("flu") || k.includes("batuk")) {
+      h = `
+      <h3>🟢 LEVEL 1 – DEMAM / FLU</h3>
+      <b>💊 Obat:</b> Paracetamol<br>
+      <b>🌿 Herbal:</b> Jahe, madu<br>
+      <b>🏠 Rumah:</b> Istirahat, minum hangat<br>
+      <b>⛔ Larangan:</b> Begadang<br>
+      <b>⏱️ Ke dokter:</b> >3 hari
+      `;
+    }
+
+    else if (k.includes("luka")) {
+      h = `
+      <h3>🟢 LEVEL 1 – LUKA RINGAN</h3>
+      <b>💊 Obat:</b> Antiseptik<br>
+      <b>🌿 Herbal:</b> Air bersih<br>
+      <b>🏠 Rumah:</b> Bersihkan & tutup kasa<br>
+      <b>⛔ Larangan:</b> Jangan kotor<br>
+      <b>⏱️ Ke dokter:</b> Luka dalam
+      `;
+    }
+
+    else {
+      h = `<p>⚠️ Keluhan belum dikenali. Coba jelaskan lebih detail.</p>`;
+    }
+
+    /* 💾 TAHAP 3 – SIMPAN RIWAYAT */
+    let riwayat = JSON.parse(localStorage.getItem("riwayat")) || [];
+    riwayat.unshift({
+      keluhan: k,
+      hasil: h,
+      waktu: new Date().toLocaleString()
+    });
+    localStorage.setItem("riwayat", JSON.stringify(riwayat));
+
+    loading.style.display = "none";
+    hasil.innerHTML = h;
+
+  }, 1200);
+}
+</script>
+
+</body>
+</html>
