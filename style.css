@@ -210,3 +210,9 @@ a.outline {
   text-align: center;
   line-height: 1.4;
 }
+.ads-container {
+  max-width: 360px;
+  margin: 24px auto;
+  padding: 8px;
+  text-align: center;
+}
